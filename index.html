@@ -123,6 +123,12 @@
   }
   .waitlist-form button:hover { background: var(--indigo-light); }
   .waitlist-form button.success { background: #2D7A4F; }
+  .waitlist-form button.has-error {
+    white-space: normal;
+    font-size: 11px;
+    line-height: 1.35;
+    text-align: left;
+  }
 
   .pain { padding: 7rem 2rem; max-width: 700px; margin: 0 auto; }
   .section-label {
@@ -478,8 +484,9 @@
 
     btn.disabled = true;
     btn.textContent = 'Enviando...';
-    btn.classList.remove('success');
+    btn.classList.remove('success', 'has-error');
 
+    let longFeedback = false;
     try {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
@@ -494,16 +501,20 @@
         btn.classList.add('success');
       } else {
         btn.textContent = data.error || 'Error';
+        btn.classList.add('has-error');
+        longFeedback = true;
       }
     } catch {
       btn.textContent = 'Sin conexión';
+      btn.classList.add('has-error');
+      longFeedback = true;
     }
 
     setTimeout(() => {
       btn.textContent = originalText;
-      btn.classList.remove('success');
+      btn.classList.remove('success', 'has-error');
       btn.disabled = false;
-    }, 3500);
+    }, longFeedback ? 7000 : 3500);
   }
 </script>
 </body>
