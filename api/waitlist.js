@@ -1,16 +1,5 @@
 const BREVO_CONTACTS = 'https://api.brevo.com/v3/contacts';
 
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'no-store, max-age=0',
-    },
-  });
-}
-
-/** Evita comillas/espacios al pegar la clave en Vercel */
 function normalizeApiKey(raw) {
   if (raw == null || typeof raw !== 'string') return '';
   let s = raw.trim();
@@ -33,9 +22,6 @@ function isDuplicateError(status, data, msg) {
   );
 }
 
-/**
- * Mensaje en español según respuesta Brevo (para que puedas corregir sin adivinar).
- */
 function mapBrevoError(status, data, rawText) {
   const msg = data && data.message != null ? String(data.message) : '';
   const text = (rawText || '').toString();
@@ -72,121 +58,131 @@ function mapBrevoError(status, data, rawText) {
   return 'No se pudo completar. Inténtalo de nuevo.';
 }
 
-export default {
-  async fetch(request) {
-    if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        status: 204,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
-      });
-    }
-
-    if (request.method === 'GET') {
-      const key = normalizeApiKey(process.env.BREVO_API_KEY);
-      return json({
-        ok: true,
-        brevoConfigured: Boolean(key),
-        listId: Number(process.env.BREVO_LIST_ID || '6'),
-      });
-    }
-
-    if (request.method !== 'POST') {
-      return json({ error: 'Método no permitido' }, 405);
-    }
-
-    const apiKey = normalizeApiKey(process.env.BREVO_API_KEY);
-    const listId = Number(process.env.BREVO_LIST_ID || '6');
-
-    if (!apiKey) {
-      console.error('BREVO_API_KEY no está definida');
-      return json({ error: 'Servicio no configurado' }, 500);
-    }
-
-    if (!Number.isFinite(listId) || listId < 1) {
-      return json({ error: 'Servicio no configurado' }, 500);
-    }
-
-    let body;
+function getJsonBody(req) {
+  let b;
+  try {
+    b = req.body;
+  } catch {
+    return null;
+  }
+  if (b != null && typeof b === 'object' && !Buffer.isBuffer(b)) {
+    return b;
+  }
+  if (typeof b === 'string') {
     try {
-      body = await request.json();
+      return JSON.parse(b);
     } catch {
-      return json({ error: 'Petición no válida' }, 400);
+      return null;
     }
+  }
+  return {};
+}
 
-    const email =
-      typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
+module.exports = async (req, res) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return json({ error: 'Introduce un correo válido' }, 400);
-    }
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    return res.status(204).end();
+  }
 
+  if (req.method === 'GET') {
+    const key = normalizeApiKey(process.env.BREVO_API_KEY);
+    return res.status(200).json({
+      ok: true,
+      brevoConfigured: Boolean(key),
+      listId: Number(process.env.BREVO_LIST_ID || '6'),
+    });
+  }
+
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ error: 'Método no permitido' });
+  }
+
+  const apiKey = normalizeApiKey(process.env.BREVO_API_KEY);
+  const listId = Number(process.env.BREVO_LIST_ID || '6');
+
+  if (!apiKey) {
+    console.error('BREVO_API_KEY no está definida');
+    return res.status(500).json({ error: 'Servicio no configurado' });
+  }
+
+  if (!Number.isFinite(listId) || listId < 1) {
+    return res.status(500).json({ error: 'Servicio no configurado' });
+  }
+
+  const body = getJsonBody(req);
+  if (body === null) {
+    return res.status(400).json({ error: 'Petición no válida' });
+  }
+
+  const email =
+    typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Introduce un correo válido' });
+  }
+
+  try {
+    const r = await fetch(BREVO_CONTACTS, {
+      method: 'POST',
+      headers: {
+        'api-key': apiKey,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        listIds: [listId],
+        updateEnabled: true,
+      }),
+    });
+
+    const text = await r.text();
+    let data = {};
     try {
-      const r = await fetch(BREVO_CONTACTS, {
-        method: 'POST',
-        headers: {
-          'api-key': apiKey,
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          listIds: [listId],
-          updateEnabled: true,
-        }),
-      });
-
-      const text = await r.text();
-      let data = {};
-      try {
-        data = text ? JSON.parse(text) : {};
-      } catch {
-        data = {};
-      }
-
-      if (r.ok) {
-        return json({ ok: true });
-      }
-
-      const msg = data.message != null ? String(data.message) : '';
-      if (isDuplicateError(r.status, data, msg)) {
-        return json({ ok: true, duplicate: true });
-      }
-
-      const mapped = mapBrevoError(r.status, data, text);
-      if (mapped === null) {
-        return json({ ok: true, duplicate: true });
-      }
-
-      console.error('Brevo error', r.status, text);
-
-      const clientStatus =
-        r.status === 401 || r.status === 403
-          ? r.status
-          : r.status === 400
-            ? 400
-            : 502;
-
-      return json(
-        {
-          error: mapped,
-          brevoStatus: r.status,
-          brevoCode: data.code || null,
-        },
-        clientStatus
-      );
-    } catch (err) {
-      console.error(err);
-      return json(
-        {
-          error:
-            'Error de conexión con Brevo. Si persiste, revisa los logs en Vercel.',
-        },
-        502
-      );
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      data = {};
     }
-  },
+
+    if (r.ok) {
+      return res.status(200).json({ ok: true });
+    }
+
+    const msg = data.message != null ? String(data.message) : '';
+    if (isDuplicateError(r.status, data, msg)) {
+      return res.status(200).json({ ok: true, duplicate: true });
+    }
+
+    const mapped = mapBrevoError(r.status, data, text);
+    if (mapped === null) {
+      return res.status(200).json({ ok: true, duplicate: true });
+    }
+
+    console.error('Brevo error', r.status, text);
+
+    const clientStatus =
+      r.status === 401 || r.status === 403
+        ? r.status
+        : r.status === 400
+          ? 400
+          : 502;
+
+    return res.status(clientStatus).json({
+      error: mapped,
+      brevoStatus: r.status,
+      brevoCode: data.code || null,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(502).json({
+      error:
+        'Error de conexión con Brevo. Si persiste, revisa los logs en Vercel.',
+    });
+  }
 };

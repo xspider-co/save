@@ -1,5 +1,7 @@
 {
   "name": "alma",
   "private": true,
-  "type": "module"
+  "engines": {
+    "node": "20.x"
+  }
 }
