@@ -31,7 +31,7 @@
   }
 
   /* ─── CURSOR ─── */
-  * { cursor: none; }
+  * { cursor: auto; }
   #cursor {
     width: 18px; height: 18px;
     background: var(--yellow);
@@ -888,10 +888,6 @@
 </head>
 <body>
 
-<!-- Custom cursor -->
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
-
 <!-- Navigation -->
 <nav>
   <div class="nav-logo">Cuba Content Awards</div>
@@ -1232,33 +1228,7 @@
 </footer>
 
 <script>
-  // ─── Custom cursor
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursor-ring');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.transform = `translate(${mx - 9}px, ${my - 9}px)`;
-  });
-
-  function animateRing() {
-    rx += (mx - rx) * .12;
-    ry += (my - ry) * .12;
-    ring.style.transform = `translate(${rx - 22}px, ${ry - 22}px)`;
-    requestAnimationFrame(animateRing);
-  }
-  animateRing();
-
-  document.querySelectorAll('a, button, .como-card, .premio-chip, .stat-card').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.transform += ' scale(1.8)';
-      ring.style.opacity = '1';
-    });
-    el.addEventListener('mouseleave', () => {
-      ring.style.opacity = '.6';
-    });
-  });
+  
 
   // ─── Scroll reveal
   const reveals = document.querySelectorAll('.reveal');
