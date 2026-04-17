@@ -1,329 +1,1293 @@
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuba Content Awards 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@300;400;600;700;800&display=swap');
+  :root {
+    --turquoise: #00C9C8;
+    --sea: #0099CC;
+    --deep: #004E7C;
+    --red: #E8212B;
+    --yellow: #FFD23F;
+    --coral: #FF6B47;
+    --palm: #2DBE6C;
+    --cream: #FFF8EE;
+    --dark: #0A1628;
+    --gold: #F4A829;
+  }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  .pg {
-    background: #ffffff;
-    font-family: 'Nunito', sans-serif;
-    padding: 52px 44px;
-    color: #111;
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--dark);
+    color: var(--cream);
+    overflow-x: hidden;
+  }
+
+  /* ─── CURSOR ─── */
+  * { cursor: none; }
+  #cursor {
+    width: 18px; height: 18px;
+    background: var(--yellow);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transition: transform .15s ease;
+  }
+  #cursor-ring {
+    width: 44px; height: 44px;
+    border: 2px solid var(--turquoise);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform .4s ease, opacity .3s;
+    opacity: .6;
+  }
+
+  /* ─── FLOATING DECO ELEMENTS ─── */
+  .deco {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    will-change: transform;
+    z-index: 2;
+  }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
     position: relative;
     overflow: hidden;
-  }
-
-  .top-stripe {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 6px;
     display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .top-stripe span { flex: 1; }
-  .top-stripe span:nth-child(1) { background: #0038A8; }
-  .top-stripe span:nth-child(2) { background: #CC0000; }
-  .top-stripe span:nth-child(3) { background: #F5C800; }
 
-  .eyebrow {
-    font-size: 11px;
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 30%, rgba(0,201,200,.25) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 20% 80%, rgba(232,33,43,.2) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,210,63,.12) 0%, transparent 70%),
+      linear-gradient(160deg, #0A1628 0%, #003A5C 40%, #0A1628 100%);
+  }
+
+  /* Collage tiles */
+  .collage-tile {
+    position: absolute;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    transform-origin: center;
+    will-change: transform;
+  }
+
+  .tile-1 { width: 180px; height: 220px; top: 8%; left: 2%; transform: rotate(-8deg); background: linear-gradient(135deg, #00C9C8, #0099CC); animation: floatA 6s ease-in-out infinite; }
+  .tile-2 { width: 140px; height: 170px; top: 5%; right: 3%; transform: rotate(6deg); background: linear-gradient(135deg, #E8212B, #FF6B47); animation: floatB 7s ease-in-out infinite; }
+  .tile-3 { width: 160px; height: 200px; bottom: 10%; left: 5%; transform: rotate(5deg); background: linear-gradient(135deg, #2DBE6C, #00C9C8); animation: floatA 8s ease-in-out infinite .5s; }
+  .tile-4 { width: 130px; height: 160px; bottom: 12%; right: 4%; transform: rotate(-7deg); background: linear-gradient(135deg, #FFD23F, #F4A829); animation: floatB 6.5s ease-in-out infinite 1s; }
+  .tile-5 { width: 100px; height: 120px; top: 50%; left: 1%; transform: rotate(3deg); background: linear-gradient(135deg, #004E7C, #0099CC); animation: floatA 7.5s ease-in-out infinite .3s; }
+  .tile-6 { width: 110px; height: 130px; top: 45%; right: 2%; transform: rotate(-4deg); background: linear-gradient(135deg, #E8212B, #004E7C); animation: floatB 5.5s ease-in-out infinite .7s; }
+
+  .tile-inner {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,.3));
+  }
+
+  @keyframes floatA {
+    0%, 100% { transform: rotate(-8deg) translateY(0px); }
+    50% { transform: rotate(-6deg) translateY(-15px); }
+  }
+  @keyframes floatB {
+    0%, 100% { transform: rotate(6deg) translateY(0px); }
+    50% { transform: rotate(4deg) translateY(-12px); }
+  }
+
+  .hero-content {
+    position: relative; z-index: 5;
+    text-align: center;
+    max-width: 900px;
+    padding: 2rem;
+    animation: heroReveal 1.2s cubic-bezier(.16,1,.3,1) both;
+  }
+
+  @keyframes heroReveal {
+    from { opacity: 0; transform: translateY(60px) scale(.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .hero-eyebrow {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--red), var(--coral));
+    color: white;
+    font-size: .75rem;
     font-weight: 700;
-    letter-spacing: 3px;
+    letter-spacing: .25em;
     text-transform: uppercase;
-    color: #CC0000;
-    margin-bottom: 14px;
-    margin-top: 12px;
+    padding: .4rem 1.2rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+    animation: slideDown .8s ease .3s both;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .hero-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 82px;
-    line-height: 0.92;
-    color: #111;
-    margin-bottom: 6px;
-    letter-spacing: 2px;
+    font-size: clamp(4rem, 12vw, 9rem);
+    line-height: .9;
+    letter-spacing: .02em;
+    background: linear-gradient(135deg, #fff 0%, var(--turquoise) 40%, var(--yellow) 70%, var(--coral) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 40px rgba(0,201,200,.4));
+    margin-bottom: .3em;
+    animation: titleReveal 1s ease .5s both;
   }
 
-  .hero-title .accent {
-    color: #CC0000;
+  @keyframes titleReveal {
+    from { opacity: 0; transform: scale(.8) skewX(-3deg); }
+    to { opacity: 1; transform: scale(1) skewX(0); }
   }
 
-  .hero-title .accent2 {
-    color: #0038A8;
-  }
-
-  .tagline {
-    font-size: 16px;
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
     font-weight: 600;
-    color: #555;
-    margin-bottom: 36px;
+    color: var(--cream);
+    opacity: .9;
     line-height: 1.5;
+    max-width: 600px;
+    margin: 0 auto 1rem;
+    animation: fadeUp .8s ease .7s both;
   }
 
-  .pill {
+  .hero-year {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: var(--yellow);
+    letter-spacing: .15em;
+    animation: fadeUp .8s ease .9s both;
+    margin-bottom: 2rem;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-cta-group {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp .8s ease 1.1s both;
+  }
+
+  .btn-primary {
     display: inline-block;
-    background: #F5C800;
-    color: #111;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 2px;
+    background: linear-gradient(135deg, var(--red), var(--coral));
+    color: white;
+    font-weight: 700;
+    font-size: .95rem;
+    letter-spacing: .05em;
     text-transform: uppercase;
-    padding: 6px 14px;
+    padding: .9rem 2.5rem;
     border-radius: 100px;
-    margin-bottom: 40px;
+    border: none;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 8px 30px rgba(232,33,43,.4);
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,.2), transparent);
+    opacity: 0;
+    transition: opacity .2s;
+  }
+
+  .btn-primary:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 15px 40px rgba(232,33,43,.5); }
+  .btn-primary:hover::before { opacity: 1; }
+
+  .btn-outline {
+    display: inline-block;
+    border: 2px solid var(--turquoise);
+    color: var(--turquoise);
+    font-weight: 700;
+    font-size: .95rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: .9rem 2.5rem;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all .2s;
+    background: rgba(0,201,200,.08);
+  }
+
+  .btn-outline:hover {
+    background: var(--turquoise);
+    color: var(--dark);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,201,200,.3);
+  }
+
+  /* ─── SCROLL INDICATOR ─── */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2rem; left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    display: flex; flex-direction: column; align-items: center;
+    gap: .5rem;
+    opacity: .6;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  .scroll-indicator span {
+    font-size: .6rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+  }
+
+  .scroll-arrow {
+    width: 2px; height: 40px;
+    background: linear-gradient(to bottom, var(--turquoise), transparent);
+    border-radius: 2px;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ─── FLAG STRIPE ─── */
+  .flag-stripe {
+    height: 6px;
+    background: linear-gradient(90deg,
+      var(--deep) 0%, var(--deep) 20%,
+      var(--red) 20%, var(--red) 40%,
+      white 40%, white 60%,
+      var(--deep) 60%, var(--deep) 80%,
+      var(--deep) 80%, var(--deep) 100%
+    );
+  }
+
+  /* ─── SECTION BASE ─── */
+  section {
+    padding: 6rem 2rem;
+    position: relative;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    display: flex; align-items: center; gap: .8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .label-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--turquoise);
+    box-shadow: 0 0 12px var(--turquoise);
+  }
+
+  .label-text {
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--turquoise);
+  }
+
+  /* ─── SECTION: ESTO NO EXISTÍA ─── */
+  #existia {
+    background:
+      radial-gradient(ellipse at 0% 50%, rgba(0,201,200,.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 100% 50%, rgba(232,33,43,.1) 0%, transparent 60%),
+      var(--dark);
+  }
+
+  .existia-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .existia-grid { grid-template-columns: 1fr; gap: 2rem; }
+  }
+
+  .existia-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1;
+    background: linear-gradient(135deg, var(--cream), var(--turquoise));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+  }
+
+  .existia-body {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: rgba(255,248,238,.7);
+  }
+
+  .existia-body strong {
+    color: var(--cream);
+    font-weight: 700;
+  }
+
+  .existia-visual {
+    position: relative;
+    height: 380px;
+  }
+
+  .ev-card {
+    position: absolute;
+    border-radius: 16px;
+    padding: 1.5rem;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,.1);
+    box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  }
+
+  .ev-card-1 {
+    background: linear-gradient(135deg, rgba(0,201,200,.2), rgba(0,153,204,.1));
+    top: 0; left: 0; right: 10%;
+    font-size: 2.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    animation: floatA 6s ease-in-out infinite;
+  }
+
+  .ev-card-2 {
+    background: linear-gradient(135deg, rgba(232,33,43,.2), rgba(255,107,71,.1));
+    bottom: 0; right: 0; left: 10%;
+    font-size: 1rem;
+    animation: floatB 7s ease-in-out infinite;
+  }
+
+  .ev-card-2 p { color: rgba(255,248,238,.8); line-height: 1.6; }
+
+  /* ─── QUOTE ─── */
+  #quote {
+    background: linear-gradient(135deg, var(--deep) 0%, #001A2E 100%);
+    overflow: hidden;
+  }
+
+  .quote-bg-text {
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(6rem, 20vw, 18rem);
+    color: rgba(0,201,200,.05);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: .05em;
+  }
+
+  .quote-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    line-height: 0;
+    color: var(--turquoise);
+    opacity: .4;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+    line-height: 1.5;
+    color: var(--cream);
+    margin-bottom: 2rem;
+  }
+
+  .quote-text span {
+    background: linear-gradient(90deg, var(--turquoise), var(--yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  .quote-author {
+    font-size: .8rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--yellow);
+    opacity: .8;
+  }
+
+  /* ─── CÓMO FUNCIONA ─── */
+  #como {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255,210,63,.08) 0%, transparent 60%),
+      var(--dark);
   }
 
   .section-title {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #0038A8;
-    margin-bottom: 12px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1;
+    margin-bottom: .5rem;
   }
 
-  .body {
-    font-size: 15px;
-    line-height: 1.8;
-    color: #444;
-    font-weight: 400;
-    margin-bottom: 36px;
+  .section-sub {
+    color: rgba(255,248,238,.5);
+    font-size: .95rem;
+    margin-bottom: 3rem;
   }
 
-  .body strong {
-    color: #111;
-    font-weight: 700;
-  }
-
-  .quote-block {
-    background: #0038A8;
-    border-radius: 12px;
-    padding: 28px 28px;
-    margin-bottom: 36px;
-  }
-
-  .quote-block p {
-    font-size: 18px;
-    font-weight: 700;
-    color: #fff;
-    line-height: 1.5;
-  }
-
-  .quote-block p span {
-    color: #F5C800;
-  }
-
-  .pillars {
+  .como-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-    margin-bottom: 36px;
+    gap: 1.5rem;
   }
 
-  .pillar {
-    border-radius: 10px;
-    padding: 20px 16px;
-    color: #fff;
+  @media (max-width: 768px) {
+    .como-grid { grid-template-columns: 1fr; }
   }
 
-  .pillar:nth-child(1) { background: #CC0000; }
-  .pillar:nth-child(2) { background: #0038A8; }
-  .pillar:nth-child(3) { background: #111; }
+  .como-card {
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform .3s, box-shadow .3s, border-color .3s;
+    cursor: default;
+  }
 
-  .pillar-num {
+  .como-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 30px 60px rgba(0,0,0,.4);
+    border-color: rgba(0,201,200,.3);
+  }
+
+  .como-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 2px 2px 0 0;
+  }
+
+  .como-card-1::before { background: linear-gradient(90deg, var(--turquoise), var(--sea)); }
+  .como-card-2::before { background: linear-gradient(90deg, var(--red), var(--coral)); }
+  .como-card-3::before { background: linear-gradient(90deg, var(--yellow), var(--gold)); }
+
+  .card-number {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 40px;
-    color: rgba(255,255,255,0.25);
+    font-size: 5rem;
     line-height: 1;
-    margin-bottom: 6px;
+    opacity: .06;
+    position: absolute;
+    top: 1rem; right: 1.5rem;
+    color: white;
   }
 
-  .pillar-title {
-    font-size: 13px;
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 6px;
+  .card-emoji {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: .03em;
+    margin-bottom: .75rem;
+    color: var(--cream);
+  }
+
+  .card-body {
+    font-size: .9rem;
+    line-height: 1.7;
+    color: rgba(255,248,238,.55);
+  }
+
+  /* ─── PREMIOS ─── */
+  #premios {
+    background: linear-gradient(180deg, var(--dark) 0%, #001830 100%);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .premios-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(0,78,124,.3) 0%, transparent 70%);
+  }
+
+  .premios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .premio-chip {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all .25s;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .premio-chip::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(255,255,255,.04));
+    opacity: 0;
+    transition: opacity .25s;
+  }
+
+  .premio-chip:hover {
+    transform: scale(1.02);
+    border-color: rgba(255,210,63,.4);
+    box-shadow: 0 10px 30px rgba(0,0,0,.3), inset 0 0 20px rgba(255,210,63,.05);
+  }
+
+  .premio-chip:hover::after { opacity: 1; }
+
+  .premio-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.3));
+  }
+
+  .premio-name {
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--cream);
     line-height: 1.3;
   }
 
-  .pillar-desc {
-    font-size: 12px;
-    font-weight: 400;
-    color: rgba(255,255,255,0.7);
-    line-height: 1.5;
+  .premio-sub {
+    font-size: .75rem;
+    color: rgba(255,248,238,.4);
+    margin-top: .2rem;
   }
 
-  .cats {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    margin-bottom: 36px;
+  /* ─── ALCANCE ─── */
+  #alcance {
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(0,201,200,.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 50%, rgba(232,33,43,.1) 0%, transparent 50%),
+      var(--dark);
   }
 
-  .cat {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #f5f5f5;
-    border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #222;
-  }
-
-  .cat-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .stats {
+  .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 36px;
+    gap: 2rem;
+    margin-top: 3rem;
   }
 
-  .stat {
-    background: #F5C800;
-    border-radius: 10px;
-    padding: 20px 14px;
+  @media (max-width: 600px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .stat-card {
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
     text-align: center;
+    transition: all .3s;
+    position: relative;
+    overflow: hidden;
   }
 
-  .stat-num {
+  .stat-card:hover {
+    transform: scale(1.04);
+    border-color: rgba(0,201,200,.25);
+    box-shadow: 0 20px 50px rgba(0,0,0,.3), 0 0 40px rgba(0,201,200,.08);
+  }
+
+  .stat-glow {
+    position: absolute;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    top: 10px; left: 50%;
+    transform: translateX(-50%);
+    filter: blur(30px);
+    opacity: .3;
+  }
+
+  .stat-number {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 38px;
-    color: #111;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
     line-height: 1;
-    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
   }
 
   .stat-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: #555;
+    font-size: .75rem;
+    letter-spacing: .1em;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    color: rgba(255,248,238,.45);
+    margin-top: .5rem;
+    position: relative;
+    z-index: 1;
   }
 
-  .closing {
-    background: #111;
-    border-radius: 12px;
-    padding: 28px;
-    margin-bottom: 36px;
+  /* ─── CIERRE / CTA ─── */
+  #cierre {
+    background: linear-gradient(160deg, #001830 0%, #0A0A1A 100%);
     text-align: center;
+    overflow: hidden;
+    position: relative;
   }
 
-  .closing p {
-    font-size: 17px;
-    font-weight: 700;
-    color: #fff;
-    line-height: 1.6;
+  .cierre-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 50% 50%, rgba(0,201,200,.15) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 20% 20%, rgba(232,33,43,.1) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(255,210,63,.1) 0%, transparent 50%);
   }
 
-  .closing p span {
-    color: #F5C800;
+  /* Animated rings */
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(0,201,200,.15);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse-ring 4s ease-in-out infinite;
   }
 
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 24px;
-    border-top: 1px solid #eee;
+  .ring-1 { width: 400px; height: 400px; animation-delay: 0s; }
+  .ring-2 { width: 600px; height: 600px; animation-delay: .7s; opacity: .6; }
+  .ring-3 { width: 800px; height: 800px; animation-delay: 1.4s; opacity: .3; }
+
+  @keyframes pulse-ring {
+    0%, 100% { opacity: .15; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: .3; transform: translate(-50%, -50%) scale(1.05); }
   }
 
-  .footer-brand {
+  .cierre-content { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+
+  .cierre-flag {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    display: block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+  .cierre-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 2px;
-    color: #CC0000;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--cream), var(--turquoise), var(--yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  .footer-ig {
-    font-size: 13px;
-    font-weight: 700;
-    color: #888;
+  .cierre-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: rgba(255,248,238,.7);
+    margin-bottom: 2.5rem;
   }
+
+  .cta-group {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .btn-gold {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--yellow), var(--gold));
+    color: var(--dark);
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: 1rem 2.8rem;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all .2s;
+    box-shadow: 0 10px 35px rgba(255,210,63,.35);
+  }
+
+  .btn-gold:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 20px 50px rgba(255,210,63,.5);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #050D1A;
+    padding: 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,.05);
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: .1em;
+    background: linear-gradient(90deg, var(--turquoise), var(--yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: .5rem;
+  }
+
+  footer p {
+    font-size: .75rem;
+    color: rgba(255,248,238,.2);
+    letter-spacing: .05em;
+  }
+
+  /* ─── SCROLL ANIMATIONS ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .3s; }
+  .reveal-delay-4 { transition-delay: .4s; }
+
+  /* ─── GLASS BADGE ─── */
+  .glass-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(10px);
+    border-radius: 100px;
+    padding: .5rem 1.2rem;
+    font-size: .8rem;
+    color: rgba(255,248,238,.7);
+    margin-bottom: 1.5rem;
+    letter-spacing: .05em;
+  }
+
+  .glass-badge .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--palm);
+    box-shadow: 0 0 8px var(--palm);
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .3; }
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,22,40,.6);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,.05);
+    transition: background .3s;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: .1em;
+    background: linear-gradient(90deg, var(--turquoise), var(--yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-links {
+    display: flex; gap: 2rem;
+    list-style: none;
+  }
+
+  @media (max-width: 600px) { .nav-links { display: none; } }
+
+  .nav-links a {
+    color: rgba(255,248,238,.5);
+    text-decoration: none;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    transition: color .2s;
+  }
+
+  .nav-links a:hover { color: var(--turquoise); }
+
+  /* ─── DIVIDERS ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+    margin: 0 2rem;
+  }
+
 </style>
+</head>
+<body>
 
-<div class="pg">
-  <div class="top-stripe"><span></span><span></span><span></span></div>
+<!-- Custom cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
 
-  <div class="eyebrow">Propuesta oficial · 2026</div>
+<!-- Navigation -->
+<nav>
+  <div class="nav-logo">Cuba Content Awards</div>
+  <ul class="nav-links">
+    <li><a href="#como">Cómo funciona</a></li>
+    <li><a href="#premios">Premios</a></li>
+    <li><a href="#alcance">Alcance</a></li>
+    <li><a href="#cierre">Participar</a></li>
+  </ul>
+</nav>
 
-  <div class="hero-title">
-    <span class="accent">Cuban</span><br>
-    <span class="accent2">Content</span><br>
-    Awards
-  </div>
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-bg"></div>
 
-  <div class="tagline">El primer premio de la historia<br>para los creadores cubanos.</div>
+  <!-- Floating collage tiles -->
+  <div class="collage-tile tile-1"><div class="tile-inner">🌺</div></div>
+  <div class="collage-tile tile-2"><div class="tile-inner">🏖️</div></div>
+  <div class="collage-tile tile-3"><div class="tile-inner">🍹</div></div>
+  <div class="collage-tile tile-4"><div class="tile-inner">🚗</div></div>
+  <div class="collage-tile tile-5"><div class="tile-inner">🎶</div></div>
+  <div class="collage-tile tile-6"><div class="tile-inner">🏆</div></div>
 
-  <div class="pill">Edición inaugural 2026</div>
-
-  <div class="section-title">Esto no existía</div>
-  <div class="body">
-    Hay una generación entera de creadores cubanos que mueve miles, algunos millones de personas, dentro y fuera de Cuba. Los ven, los siguen, los quieren. Pero nadie los ha premiado. Nadie ha hecho un evento para ellos. <strong>Eso cambia en 2026.</strong>
-  </div>
-
-  <div class="quote-block">
-    <p>"El <span>Cuban Content Awards</span> es el primer espacio real donde los creadores cubanos son celebrados como se merecen, en vivo, frente a todos."</p>
-  </div>
-
-  <div class="section-title">Cómo funciona</div>
-  <div class="pillars">
-    <div class="pillar">
-      <div class="pillar-num">01</div>
-      <div class="pillar-title">La gala en Cuba</div>
-      <div class="pillar-desc">Un evento presencial en La Habana con los creadores más grandes de la isla.</div>
+  <div class="hero-content">
+    <div class="glass-badge">
+      <span class="dot"></span>
+      Edición Inaugural · La Habana, Cuba
     </div>
-    <div class="pillar">
-      <div class="pillar-num">02</div>
-      <div class="pillar-title">En vivo para el mundo</div>
-      <div class="pillar-desc">Stream en vivo para los cubanos en EEUU, España y todo el planeta.</div>
-    </div>
-    <div class="pillar">
-      <div class="pillar-num">03</div>
-      <div class="pillar-title">Una marca que queda</div>
-      <div class="pillar-desc">El CCA no es un evento, es el referente de la cultura digital cubana.</div>
-    </div>
-  </div>
-
-  <div class="section-title">Los premios</div>
-  <div class="cats">
-    <div class="cat"><div class="cat-dot" style="background:#CC0000"></div>Creador del Año</div>
-    <div class="cat"><div class="cat-dot" style="background:#0038A8"></div>Mejor Contenido de Humor</div>
-    <div class="cat"><div class="cat-dot" style="background:#F5C800"></div>Mejor Contenido Musical</div>
-    <div class="cat"><div class="cat-dot" style="background:#CC0000"></div>Revelación del Año</div>
-    <div class="cat"><div class="cat-dot" style="background:#0038A8"></div>El Favorito de Cuba en el Mundo</div>
-    <div class="cat"><div class="cat-dot" style="background:#F5C800"></div>Premio del Público</div>
-  </div>
-
-  <div class="section-title">El alcance</div>
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-num">11M</div>
-      <div class="stat-label">Cubanos en la isla</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">2M+</div>
-      <div class="stat-label">Cubanos en el mundo</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">1ª</div>
-      <div class="stat-label">Vez en la historia</div>
+    <div class="hero-eyebrow">🇨🇺 Primer Premio de la Historia</div>
+    <h1 class="hero-title">Cuba Content<br>Awards</h1>
+    <p class="hero-sub">El primer galardón dedicado a los creadores cubanos que están cambiando el mundo desde su isla.</p>
+    <div class="hero-year">Edición Inaugural · 2026</div>
+    <div class="hero-cta-group">
+      <a href="#cierre" class="btn-primary">Participar ahora</a>
+      <a href="#como" class="btn-outline">Cómo funciona</a>
     </div>
   </div>
 
-  <div class="closing">
-    <p>El que construye esto ahora <span>define la cultura digital cubana</span> para siempre. Este es ese momento.</p>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
   </div>
+</section>
 
-  <div class="footer">
-    <div class="footer-brand">Cuban Content Awards</div>
-    <div class="footer-ig">@cca.cuba</div>
+<div class="flag-stripe"></div>
+
+<!-- ─── ESTO NO EXISTÍA ─── -->
+<section id="existia">
+  <div class="container">
+    <div class="existia-grid">
+      <div class="reveal">
+        <div class="section-label">
+          <div class="label-dot"></div>
+          <span class="label-text">La historia comienza aquí</span>
+        </div>
+        <h2 class="existia-title">Esto no<br>existía.</h2>
+        <p class="existia-body">
+          Durante décadas, los creadores cubanos han conquistado pantallas, corazones y millones de seguidores alrededor del mundo — <strong>sin que nadie los celebrara en casa.</strong>
+          <br><br>
+          Desde La Habana hasta Miami, desde Santiago hasta Madrid, existe una generación que está usando su voz, su cámara y su cultura para construir un legado digital.
+          <br><br>
+          <strong>Hoy eso cambia.</strong> Los Cuba Content Awards son el primer espacio de reconocimiento creado exclusivamente para ellos.
+        </p>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="existia-visual">
+          <div class="ev-card ev-card-1">
+            <span>🇨🇺</span>
+            <div>
+              <div style="font-weight:800;font-size:1rem;color:var(--cream)">Creadores cubanos</div>
+              <div style="font-size:.8rem;color:rgba(255,248,238,.5)">en todo el mundo</div>
+            </div>
+          </div>
+          <div class="ev-card ev-card-2" style="top:45%">
+            <p>"Son la nueva generación que está construyendo el puente entre Cuba y el mundo, un video a la vez."</p>
+            <div style="margin-top:.8rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--turquoise)">Cuba Content Awards</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── QUOTE ─── -->
+<section id="quote">
+  <div class="quote-bg-text">CUBA</div>
+  <div class="container">
+    <div class="quote-inner reveal">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">
+        La cultura cubana no tiene fronteras —<br>
+        <span>y sus creadores tampoco.</span>
+      </p>
+      <div class="quote-author">— Cuba Content Awards 2026</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── CÓMO FUNCIONA ─── -->
+<section id="como">
+  <div class="container">
+    <div class="section-label reveal">
+      <div class="label-dot"></div>
+      <span class="label-text">El evento</span>
+    </div>
+    <h2 class="section-title reveal">Cómo funciona</h2>
+    <p class="section-sub reveal">Una noche, una isla, un momento que quedará para siempre.</p>
+
+    <div class="como-grid">
+      <div class="como-card como-card-1 reveal">
+        <div class="card-number">01</div>
+        <span class="card-emoji">🏛️</span>
+        <h3 class="card-title">Gala en Cuba</h3>
+        <p class="card-body">Una ceremonia presencial en La Habana que celebra la cultura, la creatividad y el talento digital cubano en su máxima expresión. Una noche histórica en la isla.</p>
+      </div>
+      <div class="como-card como-card-2 reveal reveal-delay-1">
+        <div class="card-number">02</div>
+        <span class="card-emoji">🌍</span>
+        <h3 class="card-title">En vivo para el mundo</h3>
+        <p class="card-body">La gala se transmite en directo para millones de cubanos y latinos en todo el mundo. El evento cruza fronteras digitales y conecta a la diáspora con su cultura.</p>
+      </div>
+      <div class="como-card como-card-3 reveal reveal-delay-2">
+        <div class="card-number">03</div>
+        <span class="card-emoji">💫</span>
+        <h3 class="card-title">Marca que queda</h3>
+        <p class="card-body">Los Cuba Content Awards no son un evento de un día — son el inicio de un movimiento. Un legado anual que posiciona a Cuba como capital creativa del Caribe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── PREMIOS ─── -->
+<section id="premios">
+  <div class="premios-bg"></div>
+  <div class="container" style="position:relative;z-index:2">
+    <div class="section-label reveal">
+      <div class="label-dot" style="background:var(--yellow);box-shadow:0 0 12px var(--yellow)"></div>
+      <span class="label-text" style="color:var(--yellow)">Categorías</span>
+    </div>
+    <h2 class="section-title reveal">Los Premios</h2>
+    <p class="section-sub reveal">Reconocimiento para cada voz, cada formato, cada historia.</p>
+
+    <div class="premios-grid">
+
+      <div class="premio-chip reveal">
+        <div class="premio-icon">🎬</div>
+        <div>
+          <div class="premio-name">Mejor Creador de Contenido</div>
+          <div class="premio-sub">Categoría principal</div>
+        </div>
+      </div>
+
+      <div class="premio-chip reveal reveal-delay-1">
+        <div class="premio-icon">🎤</div>
+        <div>
+          <div class="premio-name">Mejor Creador de Música</div>
+          <div class="premio-sub">Ritmo que conecta</div>
+        </div>
+      </div>
+
+      <div class="premio-chip reveal reveal-delay-2">
+        <div class="premio-icon">😂</div>
+        <div>
+          <div class="premio-name">Mejor Humor Digital</div>
+          <div class="premio-sub">La risa que une</div>
+        </div>
+      </div>
+
+      <div class="premio-chip reveal">
+        <div class="premio-icon">✈️</div>
+        <div>
+          <div class="premio-name">Mejor Canal de Viajes</div>
+          <div class="premio-sub">Cuba y el mundo</div>
+        </div>
+      </div>
+
+      <div class="premio-chip reveal reveal-delay-1">
+        <div class="premio-icon">💄</div>
+        <div>
+          <div class="premio-name">Mejor Contenido de Belleza</div>
+          <div class="premio-sub">Estilo caribeño</div>
+        </div>
+      </div>
+
+      <div class="premio-chip reveal reveal-delay-2">
+        <div class="premio-icon">🏋️</div>
+        <div>
+          <div class="premio-name">Mejor Contenido Fitness</div>
+          <div class="premio-sub">Cuerpo y mente</div>
+        </div>
+      </div>
+
+      <div class="premio-chip reveal">
+        <div class="premio-icon">🍳</div>
+        <div>
+          <div class="premio-name">Mejor Contenido Gastronómico</div>
+          <div class="premio-sub">Sabores de Cuba</div>
+        </div>
+      </div>
+
+      <div class="premio-chip reveal reveal-delay-1">
+        <div class="premio-icon">💡</div>
+        <div>
+          <div class="premio-name">Mejor Emprendedor Digital</div>
+          <div class="premio-sub">Negocios del futuro</div>
+        </div>
+      </div>
+
+      <div class="premio-chip reveal reveal-delay-2">
+        <div class="premio-icon">📱</div>
+        <div>
+          <div class="premio-name">Revelación del Año</div>
+          <div class="premio-sub">Nueva voz emergente</div>
+        </div>
+      </div>
+
+      <div class="premio-chip reveal">
+        <div class="premio-icon">🌟</div>
+        <div>
+          <div class="premio-name">Premio del Público</div>
+          <div class="premio-sub">El voto de la gente</div>
+        </div>
+      </div>
+
+      <div class="premio-chip reveal reveal-delay-1">
+        <div class="premio-icon">🏆</div>
+        <div>
+          <div class="premio-name">Premio Leyenda</div>
+          <div class="premio-sub">Trayectoria y legado</div>
+        </div>
+      </div>
+
+      <div class="premio-chip reveal reveal-delay-2">
+        <div class="premio-icon">🌊</div>
+        <div>
+          <div class="premio-name">Premio Impacto Social</div>
+          <div class="premio-sub">Contenido con propósito</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── ALCANCE ─── -->
+<section id="alcance">
+  <div class="container">
+    <div class="section-label reveal">
+      <div class="label-dot" style="background:var(--coral);box-shadow:0 0 12px var(--coral)"></div>
+      <span class="label-text" style="color:var(--coral)">Números que hablan</span>
+    </div>
+    <h2 class="section-title reveal">El alcance</h2>
+    <p class="section-sub reveal">Una audiencia real, hambrienta de cultura y orgullo cubano.</p>
+
+    <div class="stats-grid">
+
+      <div class="stat-card reveal">
+        <div class="stat-glow" style="background:var(--turquoise)"></div>
+        <div class="stat-number" style="color:var(--turquoise)">11M+</div>
+        <div class="stat-label">Cubanos en la diáspora</div>
+      </div>
+
+      <div class="stat-card reveal reveal-delay-1">
+        <div class="stat-glow" style="background:var(--yellow)"></div>
+        <div class="stat-number" style="color:var(--yellow)">2M+</div>
+        <div class="stat-label">Creadores cubanos activos</div>
+      </div>
+
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-glow" style="background:var(--coral)"></div>
+        <div class="stat-number" style="color:var(--coral)">500M+</div>
+        <div class="stat-label">Impresiones potenciales</div>
+      </div>
+
+      <div class="stat-card reveal">
+        <div class="stat-glow" style="background:var(--palm)"></div>
+        <div class="stat-number" style="color:var(--palm)">190+</div>
+        <div class="stat-label">Países con audiencia cubana</div>
+      </div>
+
+      <div class="stat-card reveal reveal-delay-1">
+        <div class="stat-glow" style="background:var(--red)"></div>
+        <div class="stat-number" style="color:var(--red)">#1</div>
+        <div class="stat-label">Primer premio de su tipo</div>
+      </div>
+
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-glow" style="background:var(--gold)"></div>
+        <div class="stat-number" style="color:var(--gold)">2026</div>
+        <div class="stat-label">Edición inaugural</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── CIERRE ─── -->
+<section id="cierre">
+  <div class="cierre-bg"></div>
+  <div class="ring ring-1"></div>
+  <div class="ring ring-2"></div>
+  <div class="ring ring-3"></div>
+
+  <div class="container">
+    <div class="cierre-content reveal">
+      <span class="cierre-flag">🇨🇺</span>
+      <h2 class="cierre-title">El momento<br>es ahora.</h2>
+      <p class="cierre-body">
+        Cuba tiene una de las culturas más ricas, vibrantes y admiradas del mundo.<br>
+        Sus creadores merecen un escenario a la altura.<br>
+        <strong style="color:var(--cream)">Sé parte de la historia.</strong>
+      </p>
+      <div class="cta-group">
+        <a href="#" class="btn-gold">🏆 Postular mi marca</a>
+        <a href="#" class="btn-primary">🎬 Participar como creador</a>
+        <a href="#" class="btn-outline">🎟️ Quiero asistir</a>
+      </div>
+      <p style="font-size:.8rem;color:rgba(255,248,238,.3);letter-spacing:.05em">
+        Contacto: info@cubacontentawards.com &nbsp;·&nbsp; La Habana, Cuba · 2026
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="flag-stripe"></div>
+
+<footer>
+  <div class="footer-logo">Cuba Content Awards</div>
+  <p>© 2026 Cuba Content Awards · Edición Inaugural · Todos los derechos reservados</p>
+</footer>
+
+<script>
+  // ─── Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 9}px, ${my - 9}px)`;
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * .12;
+    ry += (my - ry) * .12;
+    ring.style.transform = `translate(${rx - 22}px, ${ry - 22}px)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button, .como-card, .premio-chip, .stat-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform += ' scale(1.8)';
+      ring.style.opacity = '1';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.opacity = '.6';
+    });
+  });
+
+  // ─── Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(el => obs.observe(el));
+
+  // ─── Parallax on hero tiles
+  document.addEventListener('mousemove', e => {
+    const cx = (e.clientX / window.innerWidth - .5);
+    const cy = (e.clientY / window.innerHeight - .5);
+    document.querySelectorAll('.collage-tile').forEach((tile, i) => {
+      const depth = (i + 1) * 8;
+      tile.style.transform = `rotate(${tile.style.transform.match(/-?\d+/)?.[0] || 0}deg) translate(${cx * depth}px, ${cy * depth}px)`;
+    });
+  });
+
+  // ─── Smooth parallax scroll for hero
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    document.querySelector('.hero-content').style.transform = `translateY(${scrollY * .3}px)`;
+    document.querySelector('.hero-bg').style.transform = `translateY(${scrollY * .15}px)`;
+  });
+</script>
+</body>
+</html>
