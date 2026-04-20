@@ -305,7 +305,6 @@
     outline: none;
     transition: border-color .2s, box-shadow .2s, background .2s;
     -webkit-appearance: none;
-    appearance: none;
   }
 
   input:focus, select:focus, textarea:focus {
@@ -403,7 +402,6 @@
   .range-input {
     width: 100%;
     -webkit-appearance: none;
-    appearance: none;
     height: 4px;
     border-radius: 2px;
     background: rgba(255,255,255,.1);
@@ -1097,41 +1095,66 @@
   const SUPABASE_URL = 'https://fugyjyxrfpdwtyjfctlg.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_GWuBf8xb-2ik8vjYgEETFw_S1C4rgBv';
 
-  // 2. NAVEGACIÓN ENTRE PASOS (Indispensable para que los botones funcionen)
-  function nextStep(step) {
-    document.querySelectorAll('.form-step').forEach(s => s.style.display = 'none');
-    document.getElementById('step-' + step).style.display = 'block';
+  // 2. NAVEGACIÓN ENTRE PASOS
+  function goStep(n) {
+    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById('step-' + n);
+    if (target) {
+      target.classList.add('active');
+      // Actualizar stepbar
+      document.querySelectorAll('.step-item').forEach((el, i) => {
+        el.classList.remove('active', 'done');
+        if (i + 1 < n) el.classList.add('done');
+        if (i + 1 === n) el.classList.add('active');
+      });
+      // Actualizar barra de progreso
+      const prog = document.getElementById('progress');
+      if (prog) prog.style.width = (n / 4 * 100) + '%';
+      if (n === 4) buildSummary();
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function prevStep(step) {
-    document.querySelectorAll('.form-step').forEach(s => s.style.display = 'none');
-    document.getElementById('step-' + step).style.display = 'block';
+  // 3. RESUMEN EN STEP 4
+  function buildSummary() {
+    const nombre   = document.getElementById('f-nombre')?.value || '—';
+    const apellido = document.getElementById('f-apellido')?.value || '—';
+    const email    = document.getElementById('f-email')?.value || '—';
+    const pais     = document.getElementById('f-pais')?.value || '—';
+    const seg      = document.getElementById('seg-display')?.textContent || '—';
+    const cats     = [...document.querySelectorAll('input[name="cat"]:checked')].map(c => c.value).join(', ') || '—';
+    document.getElementById('summary-content').innerHTML = `
+      <div><span style="color:rgba(255,248,238,.35);font-size:.75rem">NOMBRE</span><br>${nombre} ${apellido}</div>
+      <div><span style="color:rgba(255,248,238,.35);font-size:.75rem">EMAIL</span><br>${email}</div>
+      <div><span style="color:rgba(255,248,238,.35);font-size:.75rem">PAÍS</span><br>${pais}</div>
+      <div><span style="color:rgba(255,248,238,.35);font-size:.75rem">SEGUIDORES</span><br>${seg}</div>
+      <div><span style="color:rgba(255,248,238,.35);font-size:.75rem">CATEGORÍAS</span><br>${cats}</div>
+    `;
   }
 
-  // 3. FUNCIÓN DE ENVÍO CONEXIÓN SUPABASE
+  // 4. FUNCIÓN DE ENVÍO A SUPABASE
   async function submitForm() {
-    // Validar checkbox de condiciones
-    const a1 = document.getElementById('acc-1').checked;
-    const a2 = document.getElementById('acc-2').checked;
-    const a3 = document.getElementById('acc-3').checked;
+    const a1 = document.getElementById('agree1').checked;
+    const a2 = document.getElementById('agree2').checked;
+    const a3 = document.getElementById('agree3').checked;
 
     if (!a1 || !a2 || !a3) {
       alert('Por favor acepta todas las condiciones antes de continuar.');
       return;
     }
 
-    // Recoger los datos de los inputs
+    const plataformas = [...document.querySelectorAll('input[name="plat"]:checked')].map(el => el.value).join(', ');
+
     const formData = {
-        nombre: document.getElementById('c-nombre').value.trim(),
-        apellido: document.getElementById('c-apellido').value.trim(),
-        email: document.getElementById('c-email').value.trim(),
-        pais: document.getElementById('c-pais').value,
-        seguidores: document.getElementById('c-seguidores').value,
-        plataforma_principal: document.getElementById('c-plataforma').value,
-        usuario_principal: document.getElementById('c-user').value.trim(),
-        categorias: Array.from(document.querySelectorAll('input[name="cat"]:checked')).map(el => el.value).join(', '),
-        video_url: document.getElementById('c-video').value.trim()
+        nombre:             document.getElementById('f-nombre')?.value.trim(),
+        apellido:           document.getElementById('f-apellido')?.value.trim(),
+        email:              document.getElementById('f-email')?.value.trim(),
+        pais:               document.getElementById('f-pais')?.value,
+        seguidores:         document.getElementById('seg-display')?.textContent,
+        plataforma_principal: plataformas,
+        usuario_principal:  document.getElementById('f-nick')?.value.trim(),
+        categorias:         [...document.querySelectorAll('input[name="cat"]:checked')].map(el => el.value).join(', '),
+        video_url:          document.getElementById('f-video')?.value.trim()
     };
 
     try {
@@ -1147,14 +1170,8 @@
         });
 
         if (response.ok) {
-            // Ocultar paso 4 y mostrar mensaje de éxito
-            document.getElementById('step-4').style.display = 'none';
+            document.getElementById('step-4').classList.remove('active');
             document.getElementById('success').style.display = 'block';
-
-            // Generar ID visual (puedes usar el ID real de Supabase si prefieres)
-            const id = 'CCA-2026-' + Math.floor(Math.random() * 9000 + 1000);
-            document.getElementById('postulation-id').textContent = 'ID: ' + id;
-            
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             alert('Error al enviar a la base de datos. Asegúrate de haber ejecutado el SQL en Supabase.');
