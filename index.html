@@ -505,7 +505,32 @@
 
   @media (max-width: 768px) {
     nav { padding: 1.2rem 1.5rem; }
-    .hero-content { padding: 0 1.5rem 3rem; }
+    /* Busca esto dentro del @media (max-width: 768px) */
+.hero-content {
+  text-align: center;
+  padding: 0 20px;
+  margin-top: -40px; /* Esto sube el bloque de texto */
+}
+
+.hero h1 {
+  font-size: 3.5rem; /* Tamaño más controlado para móviles */
+  line-height: 0.9;
+  margin-bottom: 1rem;
+}
+
+.hero {
+  height: 85vh; /* Reduce un poco la altura para que se intuya el contenido de abajo */
+  min-height: 500px;
+  display: flex;
+  align-items: center; /* Centra verticalmente el contenido ahora que no está la estrella */
+  justify-content: center;
+}
+
+.hero p {
+  font-size: 1rem;
+  max-width: 280px;
+  margin: 0 auto 1.5rem auto;
+}
     .hero-year-badge { display: none; }
     .info-strip { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 2.5rem; }
     .info-strip-center, .info-strip-right { text-align: left; }
