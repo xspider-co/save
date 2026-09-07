@@ -179,9 +179,9 @@ body {
 
 .sponsors__logo {
   display: block;
-  height: 40px;
+  height: 52px;
   width: auto;
-  max-width: 140px;
+  max-width: 180px;
   object-fit: contain;
   /* Convierte el logo a blanco fantasma para no romper el navy. */
   filter: brightness(0) invert(1);
@@ -279,7 +279,7 @@ a.footer__tag:focus-visible {
   }
 
   .sponsors__logo {
-    height: 32px;
+    height: 42px;
   }
 }
 
